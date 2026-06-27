@@ -85,10 +85,19 @@ export function exportSlipPDF(slip: SlipGaji) {
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(100, 100, 100);
+  
+  // Left side: Pemilik
   doc.text('Mengetahui,', margin, finalY);
-  doc.text('Pemilik Cafe Mecamocha', margin, finalY + 5);
-  doc.line(margin, finalY + 22, margin + 40, finalY + 22);
-  doc.text('(________________)', margin, finalY + 27);
+  doc.text('Pemilik,', margin, finalY + 4);
+  doc.line(margin, finalY + 20, margin + 35, finalY + 20);
+  doc.text('(________________)', margin, finalY + 24);
+
+  // Right side: Penerima
+  const rightSigX = pageW - margin - 35;
+  doc.text('Penerima,', rightSigX, finalY);
+  doc.text('Karyawan,', rightSigX, finalY + 4);
+  doc.line(rightSigX, finalY + 20, pageW - margin, finalY + 20);
+  doc.text(`( ${slip.karyawan?.nama ?? '________________'} )`, rightSigX, finalY + 24);
 
   // ── Footer note ──
   doc.setFontSize(7);
