@@ -144,7 +144,7 @@ export default function LaporanPage() {
                   <th className="table-header">Jabatan</th>
                   <th className="table-header">Gaji Pokok</th>
                   <th className="table-header">Lembur</th>
-                  <th className="table-header">Bonus</th>
+                  <th className="table-header">uang service</th>
                   <th className="table-header">Potongan</th>
                   <th className="table-header">Total Gaji</th>
                   <th className="table-header text-center">PDF</th>
