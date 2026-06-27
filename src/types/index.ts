@@ -11,7 +11,8 @@ export interface SlipGaji {
   id: string;
   karyawan_id: string;
   bulan: string;
-  tunjangan: number;
+  lembur: number;
+  lembur_jam: number;
   bonus: number;
   potongan: number;
   total_gaji: number;

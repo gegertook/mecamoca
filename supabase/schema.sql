@@ -1,8 +1,13 @@
 -- ============================================================
--- CAFE MECAMOCA — Supabase Schema Setup
+-- CAFE MECAMOCHA — Supabase Schema Setup
 -- Run this ENTIRE script in your Supabase SQL Editor
 -- Dashboard → SQL Editor → New Query → Paste → Run
 -- ============================================================
+
+-- 💡 JIKA ANDA SUDAH MENJALANKAN SCHEMA SEBELUMNYA,
+-- Cukup jalankan 2 baris perintah SQL berikut ini di SQL Editor Anda:
+-- ALTER TABLE slip_gaji RENAME COLUMN tunjangan TO lembur;
+-- ALTER TABLE slip_gaji ADD COLUMN lembur_jam INT DEFAULT 0;
 
 -- ── 1. Tabel Karyawan ──────────────────────────────────────
 CREATE TABLE IF NOT EXISTS karyawan (
@@ -18,7 +23,8 @@ CREATE TABLE IF NOT EXISTS slip_gaji (
   id           uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   karyawan_id  uuid REFERENCES karyawan(id) ON DELETE CASCADE,
   bulan        TEXT NOT NULL,
-  tunjangan    BIGINT DEFAULT 0,
+  lembur       BIGINT DEFAULT 0,
+  lembur_jam   INT DEFAULT 0,
   bonus        BIGINT DEFAULT 0,
   potongan     BIGINT DEFAULT 0,
   total_gaji   BIGINT DEFAULT 0,

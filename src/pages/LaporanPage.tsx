@@ -143,7 +143,7 @@ export default function LaporanPage() {
                   <th className="table-header">Nama Karyawan</th>
                   <th className="table-header">Jabatan</th>
                   <th className="table-header">Gaji Pokok</th>
-                  <th className="table-header">Tunjangan</th>
+                  <th className="table-header">Lembur</th>
                   <th className="table-header">Bonus</th>
                   <th className="table-header">Potongan</th>
                   <th className="table-header">Total Gaji</th>
@@ -157,7 +157,10 @@ export default function LaporanPage() {
                     <td className="table-cell font-medium text-white">{slip.karyawan?.nama ?? '—'}</td>
                     <td className="table-cell text-gray-400">{slip.karyawan?.jabatan ?? '—'}</td>
                     <td className="table-cell">{formatRupiah(slip.karyawan?.gaji_pokok ?? 0)}</td>
-                    <td className="table-cell text-emerald-400">{formatRupiah(slip.tunjangan)}</td>
+                    <td className="table-cell text-emerald-400">
+                      <div>{formatRupiah(slip.lembur)}</div>
+                      <div className="text-xs text-gray-500">{slip.lembur_jam ?? 0} jam</div>
+                    </td>
                     <td className="table-cell text-blue-400">{formatRupiah(slip.bonus)}</td>
                     <td className="table-cell text-red-400">{formatRupiah(slip.potongan)}</td>
                     <td className="table-cell font-bold text-amber-400">{formatRupiah(slip.total_gaji)}</td>

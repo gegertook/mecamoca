@@ -24,7 +24,7 @@ export function exportSlipPDF(slip: SlipGaji) {
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(15, 23, 42); // dark
-  doc.text('CAFE MECAMOCA', pageW / 2, 9, { align: 'center' });
+  doc.text('CAFE MECAMOCHA', pageW / 2, 9, { align: 'center' });
 
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
@@ -67,7 +67,7 @@ export function exportSlipPDF(slip: SlipGaji) {
     head: [['Komponen', 'Jumlah']],
     body: [
       ['Gaji Pokok', formatRupiah(gajiPokok)],
-      ['Tunjangan', formatRupiah(slip.tunjangan)],
+      ['Lembur (' + (slip.lembur_jam ?? 0) + ' jam)', formatRupiah(slip.lembur)],
       ['Bonus', formatRupiah(slip.bonus)],
       ['Potongan', `(${formatRupiah(slip.potongan)})`],
     ],
@@ -86,14 +86,14 @@ export function exportSlipPDF(slip: SlipGaji) {
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(100, 100, 100);
   doc.text('Mengetahui,', margin, finalY);
-  doc.text('Owner Cafe MecaMoca', margin, finalY + 5);
+  doc.text('Pemilik Cafe Mecamocha', margin, finalY + 5);
   doc.line(margin, finalY + 22, margin + 40, finalY + 22);
   doc.text('(________________)', margin, finalY + 27);
 
   // ── Footer note ──
   doc.setFontSize(7);
   doc.setTextColor(160, 160, 160);
-  doc.text('Dokumen ini dicetak secara otomatis oleh Sistem Penggajian MecaMoca', pageW / 2, doc.internal.pageSize.getHeight() - 6, { align: 'center' });
+  doc.text('Dokumen ini dicetak secara otomatis oleh Sistem Penggajian Mecamocha', pageW / 2, doc.internal.pageSize.getHeight() - 6, { align: 'center' });
 
   doc.save(`Slip_Gaji_${slip.karyawan?.nama ?? 'Karyawan'}_${slip.bulan}.pdf`);
 }
@@ -109,7 +109,7 @@ export function exportBulkPDF(slips: SlipGaji[], bulanLabel: string) {
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(15, 23, 42);
-  doc.text('CAFE MECAMOCA', pageW / 2, 9, { align: 'center' });
+  doc.text('CAFE MECAMOCHA', pageW / 2, 9, { align: 'center' });
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
   doc.text(`Rekap Penggajian — ${bulanLabel}`, pageW / 2, 15, { align: 'center' });
@@ -119,7 +119,7 @@ export function exportBulkPDF(slips: SlipGaji[], bulanLabel: string) {
     s.karyawan?.nama ?? '—',
     s.karyawan?.jabatan ?? '—',
     formatRupiah(s.karyawan?.gaji_pokok ?? 0),
-    formatRupiah(s.tunjangan),
+    `${formatRupiah(s.lembur)} (${s.lembur_jam ?? 0} jam)`,
     formatRupiah(s.bonus),
     formatRupiah(s.potongan),
     formatRupiah(s.total_gaji),
@@ -130,7 +130,7 @@ export function exportBulkPDF(slips: SlipGaji[], bulanLabel: string) {
   autoTable(doc, {
     startY: 26,
     margin: { left: margin, right: margin },
-    head: [['No', 'Nama Karyawan', 'Jabatan', 'Gaji Pokok', 'Tunjangan', 'Bonus', 'Potongan', 'Total Gaji']],
+    head: [['No', 'Nama Karyawan', 'Jabatan', 'Gaji Pokok', 'Lembur', 'Bonus', 'Potongan', 'Total Gaji']],
     body: rows,
     foot: [['', '', '', '', '', '', 'Total Pengeluaran', formatRupiah(total)]],
     styles: { fontSize: 8, cellPadding: 2.5 },

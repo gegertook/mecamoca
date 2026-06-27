@@ -37,7 +37,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
         {sidebarOpen && (
           <div className="overflow-hidden">
-            <p className="text-white font-bold text-sm leading-none">MecaMoca</p>
+            <p className="text-white font-bold text-sm leading-none">Mecamocha</p>
             <p className="text-gray-500 text-xs mt-0.5">Penggajian</p>
           </div>
         )}
@@ -79,7 +79,7 @@ export default function Layout({ children }: LayoutProps) {
       <div className="px-3 pb-4 border-t border-gray-800/60 pt-4">
         {sidebarOpen && (
           <div className="px-3 py-2 mb-2">
-            <p className="text-gray-400 text-xs truncate">Owner</p>
+            <p className="text-gray-400 text-xs truncate">Pemilik</p>
             <p className="text-gray-300 text-xs truncate mt-0.5">{user?.email}</p>
           </div>
         )}
@@ -149,7 +149,7 @@ export default function Layout({ children }: LayoutProps) {
                 {user?.email?.[0]?.toUpperCase() ?? 'O'}
               </span>
             </div>
-            <span className="text-gray-300 text-sm hidden sm:block">Owner</span>
+            <span className="text-gray-300 text-sm hidden sm:block">Pemilik</span>
           </div>
         </header>
 

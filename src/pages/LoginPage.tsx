@@ -44,7 +44,7 @@ export default function LoginPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-amber-500/30">
               <Coffee size={32} className="text-gray-950" />
             </div>
-            <h1 className="text-2xl font-bold text-white">MecaMoca</h1>
+            <h1 className="text-2xl font-bold text-white">Mecamocha</h1>
             <p className="text-gray-400 text-sm mt-1">Sistem Penggajian Cafe</p>
           </div>
 
@@ -74,7 +74,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
-                  placeholder="owner@mecamoca.com"
+                  placeholder="owner@mecamocha.com"
                   className="w-full bg-gray-800/60 border border-gray-700/50 text-white placeholder-gray-600 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/30 transition-all"
                 />
               </div>
@@ -122,7 +122,7 @@ export default function LoginPage() {
           </form>
 
           <p className="text-center text-gray-600 text-xs mt-6">
-            © 2025 Cafe MecaMoca. All rights reserved.
+            © 2025 Cafe Mecamocha. All rights reserved.
           </p>
         </div>
       </div>

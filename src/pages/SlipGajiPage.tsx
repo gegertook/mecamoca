@@ -22,7 +22,7 @@ function getMonthOptions() {
 
 const monthOptions = getMonthOptions();
 
-const emptyForm = { karyawan_id: '', bulan: monthOptions[0].value, tunjangan: '', bonus: '', potongan: '' };
+const emptyForm = { karyawan_id: '', bulan: monthOptions[0].value, lembur: '', lembur_jam: '', bonus: '', potongan: '' };
 
 export default function SlipGajiPage() {
   const [slips, setSlips] = useState<SlipGaji[]>([]);
@@ -56,10 +56,11 @@ export default function SlipGajiPage() {
 
   const selectedKaryawan = karyawanList.find(k => k.id === form.karyawan_id);
   const gajiPokok = selectedKaryawan?.gaji_pokok ?? 0;
-  const tunjangan = Number(form.tunjangan) || 0;
+  const lembur = Number(form.lembur) || 0;
+  const lembur_jam = Number(form.lembur_jam) || 0;
   const bonus = Number(form.bonus) || 0;
   const potongan = Number(form.potongan) || 0;
-  const totalGaji = gajiPokok + tunjangan + bonus - potongan;
+  const totalGaji = gajiPokok + lembur + bonus - potongan;
 
   const openCreate = () => {
     setForm(emptyForm);
@@ -78,7 +79,8 @@ export default function SlipGajiPage() {
     const payload = {
       karyawan_id: form.karyawan_id,
       bulan: form.bulan,
-      tunjangan,
+      lembur,
+      lembur_jam,
       bonus,
       potongan,
       total_gaji: totalGaji,
@@ -153,7 +155,7 @@ export default function SlipGajiPage() {
                   <th className="table-header">Nama Karyawan</th>
                   <th className="table-header">Jabatan</th>
                   <th className="table-header">Gaji Pokok</th>
-                  <th className="table-header">Tunjangan</th>
+                  <th className="table-header">Lembur</th>
                   <th className="table-header">Bonus</th>
                   <th className="table-header">Potongan</th>
                   <th className="table-header">Total Gaji</th>
@@ -166,7 +168,10 @@ export default function SlipGajiPage() {
                     <td className="table-cell font-medium text-white">{slip.karyawan?.nama ?? '—'}</td>
                     <td className="table-cell text-gray-400">{slip.karyawan?.jabatan ?? '—'}</td>
                     <td className="table-cell">{formatRupiah(slip.karyawan?.gaji_pokok ?? 0)}</td>
-                    <td className="table-cell text-emerald-400">{formatRupiah(slip.tunjangan)}</td>
+                    <td className="table-cell text-emerald-400">
+                      <div>{formatRupiah(slip.lembur)}</div>
+                      <div className="text-xs text-gray-500">{slip.lembur_jam ?? 0} jam</div>
+                    </td>
                     <td className="table-cell text-blue-400">{formatRupiah(slip.bonus)}</td>
                     <td className="table-cell text-red-400">{formatRupiah(slip.potongan)}</td>
                     <td className="table-cell font-bold text-amber-400">{formatRupiah(slip.total_gaji)}</td>
@@ -250,8 +255,12 @@ export default function SlipGajiPage() {
                     </div>
                   )}
                   <div>
-                    <label className="label">Tunjangan (Rp)</label>
-                    <input id="input-tunjangan" type="number" min="0" value={form.tunjangan} onChange={e => setForm(f => ({ ...f, tunjangan: e.target.value }))} placeholder="0" className="input-field" />
+                    <label className="label">Lembur (Jam)</label>
+                    <input id="input-lembur-jam" type="number" min="0" value={form.lembur_jam} onChange={e => setForm(f => ({ ...f, lembur_jam: e.target.value }))} placeholder="0" className="input-field" />
+                  </div>
+                  <div>
+                    <label className="label">Uang Lembur (Rp)</label>
+                    <input id="input-lembur" type="number" min="0" value={form.lembur} onChange={e => setForm(f => ({ ...f, lembur: e.target.value }))} placeholder="0" className="input-field" />
                   </div>
                   <div>
                     <label className="label">Bonus (Rp)</label>
@@ -272,7 +281,7 @@ export default function SlipGajiPage() {
                   </div>
                 </div>
                 <div className="text-xs text-gray-600 mt-1">
-                  Total = Gaji Pokok + Tunjangan + Bonus − Potongan
+                  Total = Gaji Pokok + Lembur + Bonus − Potongan
                 </div>
               </div>
               <div className="modal-footer">

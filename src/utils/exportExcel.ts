@@ -11,12 +11,13 @@ export function exportExcel(slips: SlipGaji[], bulanLabel: string) {
     'Nama Karyawan': s.karyawan?.nama ?? '—',
     'Jabatan': s.karyawan?.jabatan ?? '—',
     'Gaji Pokok': s.karyawan?.gaji_pokok ?? 0,
-    'Tunjangan': s.tunjangan,
+    'Lembur Jam': s.lembur_jam ?? 0,
+    'Lembur': s.lembur,
     'Bonus': s.bonus,
     'Potongan': s.potongan,
     'Total Gaji': s.total_gaji,
     'Gaji Pokok (Rp)': formatRupiah(s.karyawan?.gaji_pokok ?? 0),
-    'Tunjangan (Rp)': formatRupiah(s.tunjangan),
+    'Lembur (Rp)': formatRupiah(s.lembur),
     'Bonus (Rp)': formatRupiah(s.bonus),
     'Potongan (Rp)': formatRupiah(s.potongan),
     'Total Gaji (Rp)': formatRupiah(s.total_gaji),
@@ -27,7 +28,8 @@ export function exportExcel(slips: SlipGaji[], bulanLabel: string) {
     'Nama Karyawan': s.karyawan?.nama ?? '—',
     'Jabatan': s.karyawan?.jabatan ?? '—',
     'Gaji Pokok': s.karyawan?.gaji_pokok ?? 0,
-    'Tunjangan': s.tunjangan,
+    'Lembur Jam': s.lembur_jam ?? 0,
+    'Lembur': s.lembur,
     'Bonus': s.bonus,
     'Potongan': s.potongan,
     'Total Gaji': s.total_gaji,
@@ -38,7 +40,8 @@ export function exportExcel(slips: SlipGaji[], bulanLabel: string) {
     'Nama Karyawan': 'TOTAL PENGELUARAN',
     'Jabatan': '',
     'Gaji Pokok': slips.reduce((sum, s) => sum + (s.karyawan?.gaji_pokok ?? 0), 0),
-    'Tunjangan': slips.reduce((sum, s) => sum + s.tunjangan, 0),
+    'Lembur Jam': slips.reduce((sum, s) => sum + (s.lembur_jam ?? 0), 0),
+    'Lembur': slips.reduce((sum, s) => sum + s.lembur, 0),
     'Bonus': slips.reduce((sum, s) => sum + s.bonus, 0),
     'Potongan': slips.reduce((sum, s) => sum + s.potongan, 0),
     'Total Gaji': slips.reduce((sum, s) => sum + s.total_gaji, 0),
@@ -48,7 +51,7 @@ export function exportExcel(slips: SlipGaji[], bulanLabel: string) {
 
   // Title rows
   XLSX.utils.sheet_add_aoa(ws, [
-    ['CAFE MECAMOCA'],
+    ['CAFE MECAMOCHA'],
     [`REKAP PENGGAJIAN — ${bulanLabel.toUpperCase()}`],
     [`Dicetak: ${new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(new Date())}`],
     [],
@@ -59,14 +62,15 @@ export function exportExcel(slips: SlipGaji[], bulanLabel: string) {
 
   // Column widths
   ws['!cols'] = [
-    { wch: 5 },
-    { wch: 25 },
-    { wch: 18 },
-    { wch: 18 },
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 18 },
+    { wch: 5 },  // No
+    { wch: 25 }, // Nama Karyawan
+    { wch: 18 }, // Jabatan
+    { wch: 18 }, // Gaji Pokok
+    { wch: 12 }, // Lembur Jam
+    { wch: 15 }, // Lembur
+    { wch: 15 }, // Bonus
+    { wch: 15 }, // Potongan
+    { wch: 18 }, // Total Gaji
   ];
 
   const wb = XLSX.utils.book_new();
