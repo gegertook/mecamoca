@@ -12,20 +12,27 @@ function formatRupiah(amount: number) {
 function getMonthOptions() {
   const options = [];
   const now = new Date();
-  for (let i = 0; i < 12; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+  for (let i = -12; i <= 6; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
     const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     const label = new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(d);
     options.push({ value, label });
   }
+  options.sort((a, b) => b.value.localeCompare(a.value));
   return options;
 }
 
+function getCurrentMonthKey() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
+
 const monthOptions = getMonthOptions();
+const currentMonthKey = getCurrentMonthKey();
 
 export default function LaporanPage() {
   const [slips, setSlips] = useState<SlipGaji[]>([]);
-  const [filterBulan, setFilterBulan] = useState(monthOptions[0].value);
+  const [filterBulan, setFilterBulan] = useState(currentMonthKey);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => { fetchSlips(); }, [filterBulan]);

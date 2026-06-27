@@ -11,23 +11,30 @@ function formatRupiah(amount: number) {
 function getMonthOptions() {
   const options = [];
   const now = new Date();
-  for (let i = 0; i < 12; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+  for (let i = -12; i <= 6; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
     const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     const label = new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(d);
     options.push({ value, label });
   }
+  options.sort((a, b) => b.value.localeCompare(a.value));
   return options;
 }
 
-const monthOptions = getMonthOptions();
+function getCurrentMonthKey() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
 
-const emptyForm = { karyawan_id: '', bulan: monthOptions[0].value, lembur: '', lembur_jam: '', bonus: '', potongan: '' };
+const monthOptions = getMonthOptions();
+const currentMonthKey = getCurrentMonthKey();
+
+const emptyForm = { karyawan_id: '', bulan: currentMonthKey, lembur: '', lembur_jam: '', bonus: '', potongan: '' };
 
 export default function SlipGajiPage() {
   const [slips, setSlips] = useState<SlipGaji[]>([]);
   const [karyawanList, setKaryawanList] = useState<Karyawan[]>([]);
-  const [filterBulan, setFilterBulan] = useState(monthOptions[0].value);
+  const [filterBulan, setFilterBulan] = useState(currentMonthKey);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
