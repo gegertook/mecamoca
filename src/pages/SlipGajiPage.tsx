@@ -29,7 +29,7 @@ function getCurrentMonthKey() {
 const monthOptions = getMonthOptions();
 const currentMonthKey = getCurrentMonthKey();
 
-const emptyForm = { karyawan_id: '', bulan: currentMonthKey, lembur: '', lembur_jam: '', bonus: '', potongan: '' };
+const emptyForm = { karyawan_id: '', bulan: currentMonthKey, jumlah_masuk: '26', lembur: '', lembur_jam: '', uang_service: '', potongan: '', bon: '' };
 
 export default function SlipGajiPage() {
   const [slips, setSlips] = useState<SlipGaji[]>([]);
@@ -63,11 +63,14 @@ export default function SlipGajiPage() {
 
   const selectedKaryawan = karyawanList.find(k => k.id === form.karyawan_id);
   const gajiPokok = selectedKaryawan?.gaji_pokok ?? 0;
+  const gajiHari = Math.round(gajiPokok / 26);
+  const jumlahMasuk = form.jumlah_masuk === '' ? 26 : Number(form.jumlah_masuk);
   const lembur = Number(form.lembur) || 0;
   const lembur_jam = Number(form.lembur_jam) || 0;
-  const bonus = Number(form.bonus) || 0;
+  const uang_service = Number(form.uang_service) || 0;
   const potongan = Number(form.potongan) || 0;
-  const totalGaji = gajiPokok + lembur + bonus - potongan;
+  const bon = Number(form.bon) || 0;
+  const totalGaji = Math.round((gajiHari * jumlahMasuk) + lembur + uang_service - potongan - bon);
 
   const openCreate = () => {
     setForm(emptyForm);
@@ -86,10 +89,13 @@ export default function SlipGajiPage() {
     const payload = {
       karyawan_id: form.karyawan_id,
       bulan: form.bulan,
+      jumlah_masuk: jumlahMasuk,
+      gaji_hari: gajiHari,
       lembur,
       lembur_jam,
-      bonus,
+      uang_service,
       potongan,
+      bon,
       total_gaji: totalGaji,
     };
 
@@ -160,11 +166,13 @@ export default function SlipGajiPage() {
               <thead>
                 <tr>
                   <th className="table-header">Nama Karyawan</th>
-                  <th className="table-header">Jabatan</th>
                   <th className="table-header">Gaji Pokok</th>
+                  <th className="table-header">Gaji (Hari)</th>
+                  <th className="table-header">Masuk</th>
                   <th className="table-header">Lembur</th>
-                  <th className="table-header">uang servis</th>
+                  <th className="table-header">Uang Servis</th>
                   <th className="table-header">Potongan</th>
+                  <th className="table-header">Bon</th>
                   <th className="table-header">Total Gaji</th>
                   <th className="table-header text-right pr-5">Aksi</th>
                 </tr>
@@ -173,14 +181,16 @@ export default function SlipGajiPage() {
                 {slips.map(slip => (
                   <tr key={slip.id} className="hover:bg-gray-800/30 transition-colors">
                     <td className="table-cell font-medium text-white">{slip.karyawan?.nama ?? '—'}</td>
-                    <td className="table-cell text-gray-400">{slip.karyawan?.jabatan ?? '—'}</td>
                     <td className="table-cell">{formatRupiah(slip.karyawan?.gaji_pokok ?? 0)}</td>
+                    <td className="table-cell">{formatRupiah(slip.gaji_hari ?? Math.round((slip.karyawan?.gaji_pokok ?? 0) / 26))}</td>
+                    <td className="table-cell text-gray-300">{slip.jumlah_masuk ?? 26} hari</td>
                     <td className="table-cell text-emerald-400">
                       <div>{formatRupiah(slip.lembur)}</div>
                       <div className="text-xs text-gray-500">{slip.lembur_jam ?? 0} jam</div>
                     </td>
-                    <td className="table-cell text-blue-400">{formatRupiah(slip.bonus)}</td>
+                    <td className="table-cell text-blue-400">{formatRupiah(slip.uang_service)}</td>
                     <td className="table-cell text-red-400">{formatRupiah(slip.potongan)}</td>
+                    <td className="table-cell text-amber-500">{formatRupiah(slip.bon ?? 0)}</td>
                     <td className="table-cell font-bold text-amber-400">{formatRupiah(slip.total_gaji)}</td>
                     <td className="table-cell text-right">
                       <div className="flex items-center justify-end gap-2">
@@ -256,26 +266,40 @@ export default function SlipGajiPage() {
                     </select>
                   </div>
                   {selectedKaryawan && (
-                    <div className="col-span-2 bg-gray-800/40 rounded-xl px-4 py-3 border border-gray-700/30">
-                      <p className="text-gray-400 text-xs">Gaji Pokok</p>
-                      <p className="text-amber-400 font-semibold mt-0.5">{formatRupiah(gajiPokok)}</p>
+                    <div className="col-span-2 grid grid-cols-2 gap-4 bg-gray-800/40 rounded-xl px-4 py-3 border border-gray-700/30">
+                      <div>
+                        <p className="text-gray-400 text-xs">Gaji Pokok</p>
+                        <p className="text-amber-400 font-semibold mt-0.5">{formatRupiah(gajiPokok)}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-xs">Gaji (Hari) <span className="text-[10px] text-gray-500">(Gaji Pokok / 26)</span></p>
+                        <p className="text-amber-400 font-semibold mt-0.5">{formatRupiah(gajiHari)}</p>
+                      </div>
                     </div>
                   )}
                   <div>
-                    <label className="label">Lembur (Jam)</label>
+                    <label className="label">Jumlah Masuk (Hari)</label>
+                    <input id="input-jumlah-masuk" type="number" min="0" max="31" step="0.5" value={form.jumlah_masuk} onChange={e => setForm(f => ({ ...f, jumlah_masuk: e.target.value }))} placeholder="26" className="input-field" />
+                  </div>
+                  <div>
+                    <label className="label">Jam Lembur</label>
                     <input id="input-lembur-jam" type="number" min="0" value={form.lembur_jam} onChange={e => setForm(f => ({ ...f, lembur_jam: e.target.value }))} placeholder="0" className="input-field" />
                   </div>
                   <div>
-                    <label className="label">Uang Lembur (Rp)</label>
+                    <label className="label">Lembur (Rp)</label>
                     <input id="input-lembur" type="number" min="0" value={form.lembur} onChange={e => setForm(f => ({ ...f, lembur: e.target.value }))} placeholder="0" className="input-field" />
                   </div>
                   <div>
-                    <label className="label">Bonus (Rp)</label>
-                    <input id="input-bonus" type="number" min="0" value={form.bonus} onChange={e => setForm(f => ({ ...f, bonus: e.target.value }))} placeholder="0" className="input-field" />
+                    <label className="label">Uang Servis (Rp)</label>
+                    <input id="input-uang-service" type="number" min="0" value={form.uang_service} onChange={e => setForm(f => ({ ...f, uang_service: e.target.value }))} placeholder="0" className="input-field" />
                   </div>
                   <div>
                     <label className="label">Potongan (Rp)</label>
                     <input id="input-potongan" type="number" min="0" value={form.potongan} onChange={e => setForm(f => ({ ...f, potongan: e.target.value }))} placeholder="0" className="input-field" />
+                  </div>
+                  <div>
+                    <label className="label">Bon (Rp)</label>
+                    <input id="input-bon" type="number" min="0" value={form.bon} onChange={e => setForm(f => ({ ...f, bon: e.target.value }))} placeholder="0" className="input-field" />
                   </div>
                   <div>
                     <label className="label">Total Gaji</label>
@@ -288,7 +312,7 @@ export default function SlipGajiPage() {
                   </div>
                 </div>
                 <div className="text-xs text-gray-600 mt-1">
-                  Total = Gaji Pokok + Lembur + Bonus − Potongan
+                  Total = (Gaji (Hari) × Jumlah Masuk) + Lembur (Rp) + Uang Servis − Potongan − Bon
                 </div>
               </div>
               <div className="modal-footer">
