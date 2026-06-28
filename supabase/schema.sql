@@ -14,9 +14,13 @@
 --   IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='slip_gaji' AND column_name='bonus') THEN
 --     ALTER TABLE slip_gaji DROP COLUMN bonus;
 --   END IF;
+--   IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='slip_gaji' AND column_name='jumlah_masuk') THEN
+--     ALTER TABLE slip_gaji DROP COLUMN jumlah_masuk;
+--   END IF;
+--   IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='slip_gaji' AND column_name='gaji_hari') THEN
+--     ALTER TABLE slip_gaji DROP COLUMN gaji_hari;
+--   END IF;
 -- END $$;
--- ALTER TABLE slip_gaji ADD COLUMN IF NOT EXISTS jumlah_masuk NUMERIC DEFAULT 26.0;
--- ALTER TABLE slip_gaji ADD COLUMN IF NOT EXISTS gaji_hari BIGINT DEFAULT 0;
 -- ALTER TABLE slip_gaji ADD COLUMN IF NOT EXISTS uang_service BIGINT DEFAULT 0;
 -- ALTER TABLE slip_gaji ADD COLUMN IF NOT EXISTS bon BIGINT DEFAULT 0;
 -- ALTER TABLE slip_gaji ADD COLUMN IF NOT EXISTS lembur_jam INT DEFAULT 0;
@@ -35,8 +39,6 @@ CREATE TABLE IF NOT EXISTS slip_gaji (
   id           uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   karyawan_id  uuid REFERENCES karyawan(id) ON DELETE CASCADE,
   bulan        TEXT NOT NULL,
-  jumlah_masuk NUMERIC DEFAULT 26.0,
-  gaji_hari    BIGINT DEFAULT 0,
   lembur       BIGINT DEFAULT 0,
   lembur_jam   INT DEFAULT 0,
   uang_service BIGINT DEFAULT 0,

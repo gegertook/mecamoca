@@ -61,9 +61,6 @@ export function exportSlipPDF(slip: SlipGaji) {
 
   // ── Salary Table ──
   const gajiPokok = slip.karyawan?.gaji_pokok ?? 0;
-  const gajiHari = slip.gaji_hari ?? Math.round(gajiPokok / 26);
-  const jumlahMasuk = slip.jumlah_masuk ?? 26;
-  const gajiTerbayar = Math.round(gajiHari * jumlahMasuk);
 
   autoTable(doc, {
     startY: 54,
@@ -71,8 +68,6 @@ export function exportSlipPDF(slip: SlipGaji) {
     head: [['Komponen', 'Jumlah']],
     body: [
       ['Gaji Pokok', formatRupiah(gajiPokok)],
-      ['Gaji (Hari)', `${formatRupiah(gajiHari)} × ${jumlahMasuk} hari`],
-      ['Gaji Terbayar', formatRupiah(gajiTerbayar)],
       ['Lembur (' + (slip.lembur_jam ?? 0) + ' jam)', formatRupiah(slip.lembur)],
       ['Uang Servis', formatRupiah(slip.uang_service)],
       ['Potongan', `(${formatRupiah(slip.potongan)})`],
@@ -132,13 +127,10 @@ export function exportBulkPDF(slips: SlipGaji[], bulanLabel: string) {
 
   const rows = slips.map((s, i) => {
     const gp = s.karyawan?.gaji_pokok ?? 0;
-    const gh = s.gaji_hari ?? Math.round(gp / 26);
     return [
       i + 1,
       s.karyawan?.nama ?? '—',
       formatRupiah(gp),
-      formatRupiah(gh),
-      `${s.jumlah_masuk ?? 26} hari`,
       `${formatRupiah(s.lembur)} (${s.lembur_jam ?? 0} jam)`,
       formatRupiah(s.uang_service),
       formatRupiah(s.potongan),
@@ -152,22 +144,20 @@ export function exportBulkPDF(slips: SlipGaji[], bulanLabel: string) {
   autoTable(doc, {
     startY: 26,
     margin: { left: margin, right: margin },
-    head: [['No', 'Nama Karyawan', 'Gaji Pokok', 'Gaji (Hari)', 'Masuk', 'Lembur', 'Uang Servis', 'Potongan', 'Bon', 'Total Gaji']],
+    head: [['No', 'Nama Karyawan', 'Gaji Pokok', 'Lembur', 'Uang Servis', 'Potongan', 'Bon', 'Total Gaji']],
     body: rows,
-    foot: [['', '', '', '', '', '', '', '', 'Total Pengeluaran', formatRupiah(total)]],
-    styles: { fontSize: 7.5, cellPadding: 2 },
+    foot: [['', '', '', '', '', '', 'Total Pengeluaran', formatRupiah(total)]],
+    styles: { fontSize: 8, cellPadding: 2.5 },
     headStyles: { fillColor: [30, 41, 59], textColor: [251, 191, 36], fontStyle: 'bold' },
     footStyles: { fillColor: [245, 158, 11], textColor: [15, 23, 42], fontStyle: 'bold' },
     columnStyles: {
-      0: { cellWidth: 8, halign: 'center' },
+      0: { cellWidth: 10, halign: 'center' },
       2: { halign: 'right' },
       3: { halign: 'right' },
-      4: { halign: 'center' },
+      4: { halign: 'right' },
       5: { halign: 'right' },
       6: { halign: 'right' },
-      7: { halign: 'right' },
-      8: { halign: 'right' },
-      9: { halign: 'right', fontStyle: 'bold' },
+      7: { halign: 'right', fontStyle: 'bold' },
     },
     alternateRowStyles: { fillColor: [248, 248, 248] },
   });
