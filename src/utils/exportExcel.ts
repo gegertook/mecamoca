@@ -6,44 +6,62 @@ function formatRupiah(amount: number) {
 }
 
 export function exportExcel(slips: SlipGaji[], bulanLabel: string) {
-  const rows = slips.map((s, i) => ({
-    'No': i + 1,
-    'Nama Karyawan': s.karyawan?.nama ?? '—',
-    'Jabatan': s.karyawan?.jabatan ?? '—',
-    'Gaji Pokok': s.karyawan?.gaji_pokok ?? 0,
-    'Lembur Jam': s.lembur_jam ?? 0,
-    'Lembur': s.lembur,
-    'Bonus': s.bonus,
-    'Potongan': s.potongan,
-    'Total Gaji': s.total_gaji,
-    'Gaji Pokok (Rp)': formatRupiah(s.karyawan?.gaji_pokok ?? 0),
-    'Lembur (Rp)': formatRupiah(s.lembur),
-    'Bonus (Rp)': formatRupiah(s.bonus),
-    'Potongan (Rp)': formatRupiah(s.potongan),
-    'Total Gaji (Rp)': formatRupiah(s.total_gaji),
-  }));
+  const rows = slips.map((s, i) => {
+    const gp = s.karyawan?.gaji_pokok ?? 0;
+    const gh = s.gaji_hari ?? Math.round(gp / 26);
+    const jm = s.jumlah_masuk ?? 26;
+    return {
+      'No': i + 1,
+      'Nama Karyawan': s.karyawan?.nama ?? '—',
+      'Gaji Pokok': gp,
+      'Gaji (Hari)': gh,
+      'Jumlah Masuk': jm,
+      'Lembur Jam': s.lembur_jam ?? 0,
+      'Lembur': s.lembur,
+      'Uang Servis': s.uang_service,
+      'Potongan': s.potongan,
+      'Bon': s.bon ?? 0,
+      'Total Gaji': s.total_gaji,
+      'Gaji Pokok (Rp)': formatRupiah(gp),
+      'Gaji (Hari) (Rp)': formatRupiah(gh),
+      'Lembur (Rp)': formatRupiah(s.lembur),
+      'Uang Servis (Rp)': formatRupiah(s.uang_service),
+      'Potongan (Rp)': formatRupiah(s.potongan),
+      'Bon (Rp)': formatRupiah(s.bon ?? 0),
+      'Total Gaji (Rp)': formatRupiah(s.total_gaji),
+    };
+  });
 
-  const displayRows = slips.map((s, i) => ({
-    'No': i + 1,
-    'Nama Karyawan': s.karyawan?.nama ?? '—',
-    'Jabatan': s.karyawan?.jabatan ?? '—',
-    'Gaji Pokok': s.karyawan?.gaji_pokok ?? 0,
-    'Lembur Jam': s.lembur_jam ?? 0,
-    'Lembur': s.lembur,
-    'Bonus': s.bonus,
-    'Potongan': s.potongan,
-    'Total Gaji': s.total_gaji,
-  }));
+  const displayRows = slips.map((s, i) => {
+    const gp = s.karyawan?.gaji_pokok ?? 0;
+    const gh = s.gaji_hari ?? Math.round(gp / 26);
+    const jm = s.jumlah_masuk ?? 26;
+    return {
+      'No': i + 1,
+      'Nama Karyawan': s.karyawan?.nama ?? '—',
+      'Gaji Pokok': gp,
+      'Gaji (Hari)': gh,
+      'Jumlah Masuk': jm,
+      'Lembur Jam': s.lembur_jam ?? 0,
+      'Lembur': s.lembur,
+      'Uang Servis': s.uang_service,
+      'Potongan': s.potongan,
+      'Bon': s.bon ?? 0,
+      'Total Gaji': s.total_gaji,
+    };
+  });
 
   const totalDisplayRow = {
     'No': '',
     'Nama Karyawan': 'TOTAL PENGELUARAN',
-    'Jabatan': '',
     'Gaji Pokok': slips.reduce((sum, s) => sum + (s.karyawan?.gaji_pokok ?? 0), 0),
+    'Gaji (Hari)': slips.reduce((sum, s) => sum + (s.gaji_hari ?? Math.round((s.karyawan?.gaji_pokok ?? 0) / 26)), 0),
+    'Jumlah Masuk': slips.reduce((sum, s) => sum + (s.jumlah_masuk ?? 26), 0),
     'Lembur Jam': slips.reduce((sum, s) => sum + (s.lembur_jam ?? 0), 0),
     'Lembur': slips.reduce((sum, s) => sum + s.lembur, 0),
-    'Bonus': slips.reduce((sum, s) => sum + s.bonus, 0),
+    'Uang Servis': slips.reduce((sum, s) => sum + s.uang_service, 0),
     'Potongan': slips.reduce((sum, s) => sum + s.potongan, 0),
+    'Bon': slips.reduce((sum, s) => sum + (s.bon ?? 0), 0),
     'Total Gaji': slips.reduce((sum, s) => sum + s.total_gaji, 0),
   };
 
@@ -64,12 +82,14 @@ export function exportExcel(slips: SlipGaji[], bulanLabel: string) {
   ws['!cols'] = [
     { wch: 5 },  // No
     { wch: 25 }, // Nama Karyawan
-    { wch: 18 }, // Jabatan
     { wch: 18 }, // Gaji Pokok
+    { wch: 15 }, // Gaji (Hari)
+    { wch: 15 }, // Jumlah Masuk
     { wch: 12 }, // Lembur Jam
     { wch: 15 }, // Lembur
-    { wch: 15 }, // Bonus
+    { wch: 15 }, // Uang Servis
     { wch: 15 }, // Potongan
+    { wch: 15 }, // Bon
     { wch: 18 }, // Total Gaji
   ];
 
